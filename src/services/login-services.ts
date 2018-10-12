@@ -12,18 +12,25 @@ export class UserAuthentication {
 
     async login(loginDetails:Login) {
 
-
         let foundUser = await User.findOne({ username: loginDetails.username });
+        console.log([foundUser].length == 1)
+        //if([foundUser].length == 1){
 
-        if([foundUser].length == 0 || foundUser == undefined){
-            let checkPassword = bcrypt.compareSync(loginDetails.password, foundUser.password)
-            console.log(checkPassword)
-            if(!checkPassword){
-                return 'Password is incorrect. Please enter a valid password'
-            }
-            return 'Please Register with Us'
-        }
-        return foundUser
+        let checkPassword = await bcrypt.compareSync(loginDetails.password, foundUser.password)
+            if(checkPassword){
+                //console.log('found');
+                if([foundUser].length == 0 || foundUser == undefined){
+                    return 'Please enter a valid username or password'
+                 }
+
+             }
+             foundUser['match']= Object.assign({'found':checkPassword})
+
+                // console.log(foundUser);
+                return foundUser
+
+       // }
+
     }
 
     
@@ -37,7 +44,7 @@ export class UserAuthentication {
         const user = new User();
 
         let hashPassword =  bcrypt.hashSync(registrationDetails.password)
-        console.log(hashPassword)
+        //console.log(hashPassword)
         user.username = registrationDetails.username;
         user.fullname = registrationDetails.fullname;
         user.email = registrationDetails.email;
@@ -46,11 +53,11 @@ export class UserAuthentication {
 
     }
 
-    async encryptPassword() {
+    // async encryptPassword() {
 
-    }
+    // }
 
-    async decryptPassword() {
+    // async decryptPassword() {
 
-    }
+    // }
 }

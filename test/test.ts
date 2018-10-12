@@ -5,6 +5,8 @@ import { UserAuthentication } from "../src/services/login-services";
 
 import "reflect-metadata";
 
+let Hash = require('../src/services/hash.js')
+
 describe('Waiter-Webbapp-Function', function () {
 
 let userAuth = new UserAuthentication
@@ -42,7 +44,6 @@ let connection: Connection;
       console.log(err);
     }
 
-
   });
 
   beforeEach(async function () {
@@ -52,43 +53,25 @@ let connection: Connection;
     await User.remove(user)
   })
 
- 
 
-  it('should check the user is registered', async function(){
+  it('should return true for the valid password entered', async function(){
     let user = new User
-    let oneUser = {
+    let oneUSer = {
       username:'gregfoulkes',
       fullname:'Greg Foulkes',
       email:'greg_foulkes@live.com',
       password:'1234'
     }
-    await userAuth.registerUser(oneUser)
+    await userAuth.registerUser(oneUSer)
     let checkThisUser = await userAuth.login({username:'gregfoulkes', password:'1234'})
-    //console.log(checkThisUser.password)
-
-    let foundUser = await User.findOne({ username: checkThisUser.username });
-    assert.equal(checkThisUser.username,'gregfoulkes')
-    assert.equal(checkThisUser.password,foundUser.password)
-
-  })
-
-    it('should return please register with us', async function(){
-    let user = new User
-
-    let oneUser = {
-      username:'gregfoulkes',
-      fullname:'Greg Foulkes',
-      email:'greg_foulkes@live.com',
-      password:'1234'
-    }
-    await userAuth.registerUser(oneUser)
-    let checkThisUser = await userAuth.login({username:'gregfoulkes', password:'1234'})
-
     console.log(checkThisUser)
-    assert.equal(checkThisUser, 'Please Register with Us')
+
+    assert.equal(checkThisUser.username,'gregfoulkes')
+    assert.equal(true,checkThisUser.match.found)
+
   })
 
-  it('should return please enter a valid password', async function(){
+  it('should return false for the invalid password entered', async function(){
     let user = new User
     let oneUSer = {
       username:'gregfoulkes',
@@ -98,14 +81,30 @@ let connection: Connection;
     }
     await userAuth.registerUser(oneUSer)
     let checkThisUser = await userAuth.login({username:'gregfoulkes', password:'123'})
-    //console.log(checkThisUser)
-    //let check = ();
-    let foundUser = await User.findOne({ username: checkThisUser.username });
+    console.log(checkThisUser)
 
     assert.equal(checkThisUser.username,'gregfoulkes')
-    assert.equal(checkThisUser,'Password is incorrect. Please enter a valid password')
+    assert.equal(false,checkThisUser.match.found)
 
   })
+
+  // it('should return false for the invalid password entered', async function(){
+  //   let user = new User
+  //   let oneUSer = {
+  //     username:'gregfoulkes',
+  //     fullname:'Greg Foulkes',
+  //     email:'greg_foulkes@live.com',
+  //     password:'1234'
+  //   }
+  //   await userAuth.registerUser(oneUSer)
+  //   let checkThisUser = await userAuth.login({username:'grefoulkes', password:'1234'})
+  //   console.log(checkThisUser)
+
+  //   //assert.equal(checkThisUser.username,'gregfoulkes')
+  //   assert.equal(checkThisUser,'Please Register with Us')
+
+  // })
+
 
   after(async function () {
     connection.close();
