@@ -1,12 +1,12 @@
 import * as express from "express";
 import { User } from "../entity/User";
-import {UserAuthentication} from "../services/login-services";
+import {UserAuth} from "../services/auth-services";
 
 
-export default class LoginRoutes {
+export default class AuthRoutes {
 
     async login(req : express.Request, res : express.Response){
-        let user = new UserAuthentication()
+        let user = new UserAuth()
         let loginData = req.body.userdata
         try {
             const days = await user.login(loginData);
@@ -22,10 +22,10 @@ export default class LoginRoutes {
     }
 
     async register(req : express.Request, res : express.Response){
-        let user = new UserAuthentication()
+        let user = new UserAuth()
         let registrationData = req.body.registrationdata
         try {
-            const days = await user.registerUser(registrationData);
+           await user.registerUser(registrationData);
             res.json({
                 status: 'success'
             });

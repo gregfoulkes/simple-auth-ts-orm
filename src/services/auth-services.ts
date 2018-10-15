@@ -8,17 +8,15 @@ import { Login,Register } from "../interfaces/auth-interfaces";
 
 let connection: Connection
 
-export class UserAuthentication {
+export class UserAuth {
 
     async login(loginDetails:Login) {
 
         let foundUser = await User.findOne({ username: loginDetails.username });
         console.log([foundUser].length == 1)
-        //if([foundUser].length == 1){
 
         let checkPassword = await bcrypt.compareSync(loginDetails.password, foundUser.password)
             if(checkPassword){
-                //console.log('found');
                 if([foundUser].length == 0 || foundUser == undefined){
                     return 'Please enter a valid username or password'
                  }
@@ -26,11 +24,7 @@ export class UserAuthentication {
              }
              foundUser['match']= Object.assign({'found':checkPassword})
 
-                // console.log(foundUser);
                 return foundUser
-
-       // }
-
     }
 
     
@@ -53,11 +47,4 @@ export class UserAuthentication {
 
     }
 
-    // async encryptPassword() {
-
-    // }
-
-    // async decryptPassword() {
-
-    // }
 }

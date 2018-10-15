@@ -1,7 +1,7 @@
 import * as assert from "assert";
 import { createConnection, Connection } from "typeorm";
 import { User } from "../src/entity/User";
-import { UserAuthentication } from "../src/services/login-services";
+import { UserAuth } from "../src/services/auth-services";
 
 import "reflect-metadata";
 
@@ -9,7 +9,7 @@ let Hash = require('../src/services/hash.js')
 
 describe('Waiter-Webbapp-Function', function () {
 
-let userAuth = new UserAuthentication
+let userAuth = new UserAuth
 let connection: Connection;
 
   before(async function () {
@@ -81,30 +81,11 @@ let connection: Connection;
     }
     await userAuth.registerUser(oneUSer)
     let checkThisUser = await userAuth.login({username:'gregfoulkes', password:'123'})
-    console.log(checkThisUser)
 
     assert.equal(checkThisUser.username,'gregfoulkes')
     assert.equal(false,checkThisUser.match.found)
 
   })
-
-  // it('should return false for the invalid password entered', async function(){
-  //   let user = new User
-  //   let oneUSer = {
-  //     username:'gregfoulkes',
-  //     fullname:'Greg Foulkes',
-  //     email:'greg_foulkes@live.com',
-  //     password:'1234'
-  //   }
-  //   await userAuth.registerUser(oneUSer)
-  //   let checkThisUser = await userAuth.login({username:'grefoulkes', password:'1234'})
-  //   console.log(checkThisUser)
-
-  //   //assert.equal(checkThisUser.username,'gregfoulkes')
-  //   assert.equal(checkThisUser,'Please Register with Us')
-
-  // })
-
 
   after(async function () {
     connection.close();
